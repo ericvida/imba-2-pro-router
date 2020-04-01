@@ -2,21 +2,12 @@ import 'pro-router/standalone'
 import L from 'lodash'
 
 tag router-tag
-	prop component
 	def setup
-		@component = null
 		@cache = {}
 
-	# what is equivalent of componentDidSet in Imba 2?
-	def componentDidSet val, prev
-		removeChild(prev) if prev
-		appendChild(val) if val
-		self
-
 	def render
-		component =@cache[@data] ||= imba.createElement(@data,null,null,self)
-		# what is equivalent of end in Imba 2?
-		component.end
+		<self>
+			@cache[@data] ||= imba.createElement(@data,null,null,self)
 
 tag ref-tag < a
 	prop view
