@@ -1,25 +1,23 @@
 import 'pro-router/standalone'
 import L from 'lodash'
-var h =
-	compact: L.compact
-	fromPairs: L.fromPairs
-	chunk: L.chunk
-	includes: L.includes
-	reject: L.reject
-	toPairs: L.toPairs
-	flatten: L.flatten
+
 tag router-tag
 	prop component
 	def setup
 		@component = null
 		@cache = {}
+
+	# what is equivalent of componentDidSet in Imba 2?
 	def componentDidSet val, prev
 		removeChild(prev) if prev
 		appendChild(val) if val
 		self
+
 	def render
-		component = @cache[@data] ||= imba.createElement(@data,null,null,self)
+		component =@cache[@data] ||= imba.createElement(@data,null,null,self)
+		# what is equivalent of end in Imba 2?
 		component.end
+
 tag ref-tag < a
 	prop view
 	prop target
@@ -28,7 +26,7 @@ tag ref-tag < a
 	def setup
 		@r = R
 	def render
-		<self.active=is_active href=link :click=(do return false)>
+		<self.active=is_active href=link() :click=(do return false)>
 			<slot>
 	def is_active
 		var view, params
@@ -39,7 +37,7 @@ tag ref-tag < a
 		@r.go dom:href
 		window.scrollTo 0, 0
 	def link
-		@go || url
+		@go || url()
 	def url
 		if @target
 			var attributes = L.reduce L.concat({}, @target), do |map, el|
@@ -57,7 +55,7 @@ tag switch-tag
 	def ontap
 		@r.toggle key unless isDisabled
 	def render
-		<self .is_on=isOn .disabled=isDisabled>
+		<self .is_on=isOn() .disabled=isDisabled()>
 			<slot>
 tag not-found
 	def render
@@ -65,17 +63,14 @@ tag not-found
 			<h1> 'Page not found'
 tag app-root
 	def build
-		R.init helpers: L, render: L.throttle self.render.bind(self), 17
-	def To path
-		R.go("/{path}")
+		R.init helpers: L, render: L.throttle(self.render.bind(self), 17), root: 'home-page', views: ['home-page', 'docs-page', 'about-page']
 	def render
 		<self> 
 			<h1> "pro-router.js - {R.view}"
 			<nav>
-				<ref-tag link="home" view="home"> "home"
-				<ref-tag link="docs" view="docs"> "docs"
-			<router-tag>
-			<router-tag>
+				<ref-tag view="home-page"> "home"
+				<ref-tag view="docs-page"> "docs"
+			<router-tag[R.view]>
 	### css
 	nav {
 		display: flex;
