@@ -62,17 +62,33 @@ tag about-page
 tag docs-page
 	<self> 
 		<h1> "Learn Something"
+tag books-page
+	<self>
+		<div #book-1> "book 1"
+		<div #book-2> "book 2"
+		<div #book-3> "book 3"
+	### css
+	books-page > div {
+		background-color: tomato;
+		height: 400px;
+		text-align: center;
+	}
+	###
 tag app-root
 	def build
-		R.init helpers: L, render: L.throttle(self.render.bind(self), 17), root: 'home-page', views: ['home-page', 'docs-page', 'about-page']
+		R.init 
+			helpers: L, 
+			render: L.throttle(self.render.bind(self), 17),  # This uses Lodash.throttle to allow methods to run once every 17 milliseconds. 1000/17 = 60 frames per second.
+			root: 'home-page', # set your root view
+			views: ['home-page', 'docs-page', 'about-page', 'books-page'] # set all your views. All others will be 404.
 	def render
 		<self> 
 			<h1> "pro-router.js - {R.view}"
 			<nav>
-				<ref-tag go="/"> "Home link"
 				<ref-tag view="home-page"> "home-route"
 				<ref-tag view="docs-page"> "docs"
-				<ref-tag view="about-page"> "about"
+				<ref-tag view="books-page" target={book: 1234}> "book"
+				<ref-tag view="wrong-page"> "not-found"
 			<router-tag[R.view]>
 	### css
 	nav {
@@ -80,6 +96,9 @@ tag app-root
 		justify-content: space-evenly;
 		background-color: #0f0f0f;
 		color: white;
+		a {
+			color: white;
+		}
 		> * {
 			flex: 1;
 			text-align: center;

@@ -51,3 +51,12 @@ export tag not-found
 	def render
 		<self>
 			<h1> 'Page not found'
+
+### Marek's notes
+Throttle method see in Lodash documentation, it requires second argument
+17 says, you can run method once per 17 miniseconds
+
+Generally in my opinion application should have main render method. It can be called by 2 services - router and store.
+Both are for the same reason - the data was changed, so the presentation layer should be rerendered to present new information.
+There's no other reasons ever the application should be rerendered.
+###
