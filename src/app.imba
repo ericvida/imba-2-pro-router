@@ -1,5 +1,16 @@
 import 'pro-router/standalone'
 import L from 'lodash'
+let books = [
+	id: 1
+	type: "book"
+	title: "How to Imba"
+	author: "Eric Tirado"
+	---
+	id: 2
+	type: "book"
+	title: "How to Router"
+	author: "Marek Piasecki"
+]
 tag router-tag
 	def setup
 		@cache = {}
@@ -33,7 +44,7 @@ tag ref-tag < a
 	def url
 		if @target
 			var attributes = L.reduce L.concat({}, @target), do |map, el|
-				map[el.type()] = el.id()
+				map[el.type] = el.id
 				map
 		@r.to_path @view, L.defaults attributes || {}, @r.safe_params
 tag switch-tag
@@ -64,16 +75,32 @@ tag docs-page
 		<h1> "Learn Something"
 tag books-page
 	<self>
-		<div #book-1> "book 1"
-		<div #book-2> "book 2"
-		<div #book-3> "book 3"
+		<.book-links>
+			for book in books
+				<ref-tag view="books-page" target=book> "book: {book.id}"
+		for book in books
+			<div>
+				<span> "{book.id} — "
+				<span> book.title
 	### css
 	books-page > div {
-		background-color: tomato;
-		height: 400px;
 		text-align: center;
 	}
+	.book-links {
+		display: flex;
+		justify-content: space-around;
+		a {
+		background-color: #efefef;
+		padding: 10px 5px;
+		margin-bottom: 10px;
+		flex-grow: 1;
+			&:hover {
+				background-color: aquamarine;
+			}
+		}
+	}
 	###
+
 tag app-root
 	def build
 		R.init 
@@ -87,7 +114,7 @@ tag app-root
 			<nav>
 				<ref-tag view="home-page"> "home-route"
 				<ref-tag view="docs-page"> "docs"
-				<ref-tag view="books-page" target={book: 1234}> "book"
+				<ref-tag view="books-page"> "books"
 				<ref-tag view="wrong-page"> "not-found"
 			<router-tag[R.view]>
 	### css
@@ -109,4 +136,5 @@ tag app-root
 		}
 	}
 	###
+
 
