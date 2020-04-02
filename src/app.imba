@@ -108,19 +108,20 @@ tag about-page
 tag docs-page
 	<self> 
 		<h1> "Learn Something"
+
+R.getters.book = do |v| books[v]
+
 tag books-page
 	def render
 		<self>
-			
 			<.book-links>
 				for book in books
 					<ref-tag view="books-page" target=book> "book: {book.id}"
-			for book in books
-				if books[R.param("book")] is book
-					<div>
-						<span> "{book.id} — "
-						<span> "{book.title}, "
-						<span> book.author
+			if let book = R.param('book')
+				<div>
+					<span> "{book.id} — "
+					<span> "{book.title}, "
+					<span> book.author
 	### css
 	books-page > div {
 		text-align: center;
