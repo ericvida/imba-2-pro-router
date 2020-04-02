@@ -1,12 +1,12 @@
 import 'pro-router/standalone'
 import L from 'lodash'
 let books = [
-	id: 1
+	id: 0
 	type: "book"
 	title: "How to Imba"
 	author: "Eric Tirado"
 	---
-	id: 2
+	id: 1
 	type: "book"
 	title: "How to Router"
 	author: "Marek Piasecki"
@@ -66,7 +66,42 @@ tag not-found
 			<h1> 'Page not found'
 tag home-page
 	<self> 
-		<h1> "Welcome Home"
+		<h1> "Go Routes"
+		<p> "This page was routed using the go property as follows "
+			<code> "<route-tag go='/>"
+		<p> "it practically behaves the same way "
+			<code> "<a href='/' would>"
+		<p> "If you notice, the route on your browser goes to the index of your page"
+		<p> "You may wonder—How does it know to render the " 
+			<code> "<home-page>"
+			"?"
+		<p>	"In our <app-root> component we have initiated our router with some basic information including which component our app should render on the home route"
+		<pre>
+			"R.init \n
+	helpers: L, \n
+	render: L.throttle(self.render.bind(self), 17),  # This uses Lodash.throttle to allow methods to run once every 17 milliseconds. 1000/17 = 60 frames per second. \n
+	root: 'home-page', # set your root view \n
+	views: ['home-page', 'docs-page', 'about-page', 'books-page'] # set all your views. All others will be 404. \n
+			"
+		
+### css 
+	pre {
+		background-color: #2f2f2f;
+		color: whitesmoke;
+		padding: 20px;
+		border-radius: 5px;
+		overflow: scroll;
+	}
+	code {
+		background-color: whitesmoke;
+		padding: 5px;
+		border-radius: 3px;
+		letter-spacing: 1px;
+		font-family: monospace;
+		font-weight: bold;
+		color: #2f2f2f;
+	}
+###
 tag about-page
 	<self> 
 		<h1> "About Us"
@@ -74,14 +109,18 @@ tag docs-page
 	<self> 
 		<h1> "Learn Something"
 tag books-page
-	<self>
-		<.book-links>
+	def render
+		<self>
+			
+			<.book-links>
+				for book in books
+					<ref-tag view="books-page" target=book> "book: {book.id}"
 			for book in books
-				<ref-tag view="books-page" target=book> "book: {book.id}"
-		for book in books
-			<div>
-				<span> "{book.id} — "
-				<span> book.title
+				if books[R.param("book")] is book
+					<div>
+						<span> "{book.id} — "
+						<span> "{book.title}, "
+						<span> book.author
 	### css
 	books-page > div {
 		text-align: center;
@@ -111,9 +150,11 @@ tag app-root
 	def render
 		<self> 
 			<h1> "pro-router.js - {R.view}"
+			<div .{this.localName}>
 			<nav>
-				<ref-tag view="home-page"> "home-route"
-				<ref-tag view="docs-page"> "docs"
+				<ref-tag go="/"> "go route"
+				<ref-tag view="docs-page"> "view route"
+				<ref-tag to_path="to-page"> "view route"
 				<ref-tag view="books-page"> "books"
 				<ref-tag view="wrong-page"> "not-found"
 			<router-tag[R.view]>
