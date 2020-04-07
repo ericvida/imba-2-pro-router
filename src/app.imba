@@ -1,62 +1,51 @@
-import 'pro-router/standalone'
 import L from 'lodash'
-let books = [
-	id: 0
-	type: "book"
-	title: "How to Imba"
-	author: "Eric Tirado"
-	---
-	id: 1
-	type: "book"
-	title: "How to Router"
-	author: "Marek Piasecki"
-]
-tag router-tag
+import 'pro-router/standalone'
+import {books} from './books'
+tag router-tag # has comments
+	# <router-tag[R.view]>
+	# <ref-tag go="/home"> It works just as <a href="">
+	# <ref-tag view="/home" target="app-root">
 	def setup
-		@cache = {}
-
+		cache = {}
 	def render
 		<self>
-			@cache[@data] ||= imba.createElement(@data,null,null,self)
-# <router-tag[R.view]>
-# <ref-tag go="/home"> It works just as <a href="">
-# <ref-tag view="/home" target="app-root">
+			cache[data] ||= imba.createElement(data,null,null,self)
 tag ref-tag < a
 	prop view
 	prop target
 	prop go
 	attr onclick
 	def setup
-		@r = R
+		r = R
 	def render
 		<self.active=is_active href=link() :click=(do return false)>
 			<slot>
 	def is_active
 		var view, params
-		[ view, params ] = @r.split_path(link)
-		view == @r.view && L.isEqual params, @r.params
+		[ view, params ] = r.split_path(link)
+		view == r.view && L.isEqual params, r.params
 	def ontap e
 		return if is_active
-		@r.go dom:href
+		r.go dom:href
 		window.scrollTo 0, 0
 	def link
-		@go || url()
+		go || url()
 	def url
-		if @target
-			var attributes = L.reduce L.concat({}, @target), do |map, el|
+		if target
+			var attributes = L.reduce L.concat({}, target), do |map, el|
 				map[el.type] = el.id
 				map
-		@r.to_path @view, L.defaults attributes || {}, @r.safe_params
+		r.to_path view, L.defaults attributes || {}, r.safe_params
 tag switch-tag
 	prop key
 	prop isDisabled
 	prop isOn
 	def setup
-		@r = R
+		r = R
 	def is_on
-		@r.params[key]
+		r.params[key]
 	def ontap
-		@r.toggle key unless isDisabled
+		r.toggle key unless isDisabled
 	def render
 		<self .is_on=isOn() .disabled=isDisabled()>
 			<slot>
@@ -84,24 +73,24 @@ tag home-page
 	views: ['home-page', 'docs-page', 'about-page', 'books-page'] # set all your views. All others will be 404. \n
 			"
 		
-### css 
-	pre {
-		background-color: #2f2f2f;
-		color: whitesmoke;
-		padding: 20px;
-		border-radius: 5px;
-		overflow: scroll;
-	}
-	code {
-		background-color: whitesmoke;
-		padding: 5px;
-		border-radius: 3px;
-		letter-spacing: 1px;
-		font-family: monospace;
-		font-weight: bold;
-		color: #2f2f2f;
-	}
-###
+	### css 
+		pre {
+			background-color: #2f2f2f;
+			color: whitesmoke;
+			padding: 20px;
+			border-radius: 5px;
+			overflow: scroll;
+		}
+		code {
+			background-color: whitesmoke;
+			padding: 5px;
+			border-radius: 3px;
+			letter-spacing: 1px;
+			font-family: monospace;
+			font-weight: bold;
+			color: #2f2f2f;
+		}
+	###
 tag about-page
 	<self> 
 		<h1> "About Us"
@@ -109,19 +98,35 @@ tag docs-page
 	<self> 
 		<h1> "Learn Something"
 
-R.getters.book = do |v| books[v]
+let things = [
+	id: 0
+	type: "book"
+	title: "yes"
+	author: "mom"
+	---
+	id: 1
+	type: "book"
+	title: "no"
+	author: "dad"
+]
+// R.getters.book = do |v| books[v]
+R.getters.book = do |v| things[v] 
+# R.param('book') is calculated when this getter function is given and cached until the next turn
+# this is creating a getter called book, for objects inside the things array.
+# NOTE: the things object array must have a parameter called type with a value called book, for R.param('book') to find it.
+# R.param('book') is looking for objectes with a parameter `type` that has a value of 'book'
 
 tag books-page
 	def render
 		<self>
 			<.book-links>
-				for book in books
-					<ref-tag view="books-page" target=book> "book: {book.id}"
-			if let book = R.param('book')
+				for book in things
+					<ref-tag view="books-page" target=book> "book: {book.title}"
+			if let boook = R.param('book')
 				<div>
-					<span> "{book.id} — "
-					<span> "{book.title}, "
-					<span> book.author
+					<span> "{boook.id} — "
+					<span> "{boook.title} "
+					<span> "{boook.author}"
 	### css
 	books-page > div {
 		text-align: center;
@@ -151,7 +156,6 @@ tag app-root
 	def render
 		<self> 
 			<h1> "pro-router.js - {R.view}"
-			<div .{this.localName}>
 			<nav>
 				<ref-tag go="/"> "go route"
 				<ref-tag view="docs-page"> "view route"

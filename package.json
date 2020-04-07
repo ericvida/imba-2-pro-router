@@ -7,8 +7,8 @@
   "dependencies": {
     "@vaadin/router": "^1.7.1",
     "express": "^4.17.1",
-    "imba": "^2.0.0-alpha.39",
-    "imba-rollup": "^2.0.0-alpha.31",
+    "imba": "^2.0.0-alpha.41",
+    "imba-rollup": "^2.0.0-alpha.41",
     "lodash": "^4.17.15",
     "pro-router": "^4.3.2"
   },
