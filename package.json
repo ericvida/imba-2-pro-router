@@ -9,7 +9,7 @@
     "express": "^4.17.1",
     "imba": "^2.0.0-alpha.41",
     "imba-rollup": "^2.0.0-alpha.41",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "pro-router": "^4.3.2"
   },
   "devDependencies": {}
