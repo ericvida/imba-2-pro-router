@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@vaadin/router": "^1.7.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "imba": "^2.0.0-alpha.41",
     "imba-rollup": "^2.0.0-alpha.41",
     "lodash": "^4.17.15",
